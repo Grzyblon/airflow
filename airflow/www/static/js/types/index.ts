@@ -29,6 +29,7 @@ import type {
 import type * as API from "./api-generated";
 
 type RunState = "success" | "running" | "queued" | "failed";
+type RunType = "manual" | "backfill" | "scheduled" | "asset_triggered";
 
 type TaskState =
   | RunState
@@ -54,7 +55,7 @@ interface Dag {
 
 interface DagRun {
   runId: string;
-  runType: "manual" | "backfill" | "scheduled" | "asset_triggered";
+  runType: RunType;
   state: RunState;
   executionDate: string;
   dataIntervalStart: string;
