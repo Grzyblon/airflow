@@ -36,10 +36,7 @@ import { useTimezone } from "src/context/timezone";
 import { isoFormatWithoutTZ } from "src/datetime_utils";
 import useFilters from "src/dag/useFilters";
 import DateTimeInput from "src/components/DateTimeInput";
-import { MdInfo, MdOutlineSchedule, MdPlayArrow } from "react-icons/md";
-import { RiArrowGoBackFill } from "react-icons/ri";
-import { HiDatabase } from "react-icons/hi";
-import { IconType } from "react-icons";
+import DagRunTypeIcon from "src/components/RunTypeIcon";
 
 declare const filtersOptions: {
   dagStates: RunState[];
@@ -86,7 +83,7 @@ const FilterBar = () => {
     size: "lg",
   };
 
-  const multiSelectBoxStyle = { minWidth: "160px", zIndex: 3 };
+  const multiSelectBoxStyle = { minWidth: "170px", zIndex: 3 };
 
   const multiSelectStyles: Record<string, any> = {
     size: "lg",
@@ -130,11 +127,10 @@ const FilterBar = () => {
     },
   });
 
+
   interface RunTypesOption extends OptionBase {
     label: string;
-    value: string;
-    icon: IconType;
-    // iconColor: string;
+    value: DagRun["runType"];
   }
 
   const customComponents: SelectComponentsConfig<
@@ -144,43 +140,17 @@ const FilterBar = () => {
   > = {
     Option: ({ children, ...props }) => (
       <chakraComponents.Option {...props}>
-        <Icon as={props.data.icon} color="gray" mr={2} h={5} w={5} />
-        {children}
+        <Icon as={() => <DagRunTypeIcon runType={props.data.value} color="grey" />} />
+        <Box ml={1}>{children}</Box>
       </chakraComponents.Option>
     ),
     MultiValueContainer: ({ children, ...props }) => (
       <chakraComponents.MultiValueContainer {...props}>
-        <TagLeftIcon as={props.data.icon} color="white" />
+        <TagLeftIcon as={() => <DagRunTypeIcon runType={props.data.value} color="white" />} />
         {children}
       </chakraComponents.MultiValueContainer>
     ),
   };
-
-  const getIcon = (runType: string): IconType => {
-    switch (runType) {
-      case "manual":
-        return MdPlayArrow;
-      case "backfill":
-        return RiArrowGoBackFill;
-      case "scheduled":
-        return MdOutlineSchedule;
-      case "dataset_triggered":
-        return HiDatabase;
-      default:
-        return MdInfo;
-    }
-  };
-
-  const transformRunTypesToMultiSelectOptions = (
-    options: string[] | null
-  ): { label: string; value: string; icon: IconType }[] =>
-    options === null
-      ? []
-      : options.map((option) => ({
-          label: option,
-          value: option,
-          icon: getIcon(option),
-        }));
 
   return (
     <Flex backgroundColor="blackAlpha.200" p={4} justifyContent="space-between">
@@ -196,7 +166,7 @@ const FilterBar = () => {
         <Box px={2} style={multiSelectBoxStyle}>
           <MultiSelect
             {...runTypeStyles}
-            value={transformRunTypesToMultiSelectOptions(runType)}
+            value={transformArrayToMultiSelectOptions(runType)}
             onChange={(typeOptions) => {
               if (
                 Array.isArray(typeOptions) &&
