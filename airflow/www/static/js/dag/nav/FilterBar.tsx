@@ -19,7 +19,7 @@
 
 /* global moment */
 
-import { Box, Button, Flex, Icon, Select, TagLeftIcon } from "@chakra-ui/react";
+import { Box, Button, Flex, Select } from "@chakra-ui/react";
 import MultiSelect from "src/components/MultiSelect";
 import React from "react";
 import type { DagRun, RunState, TaskState } from "src/types";
@@ -30,13 +30,13 @@ import type {
   SelectComponentsConfig,
   Size,
 } from "chakra-react-select";
-import { chakraComponents, useChakraSelectProps } from "chakra-react-select";
+import { useChakraSelectProps } from "chakra-react-select";
 
 import { useTimezone } from "src/context/timezone";
 import { isoFormatWithoutTZ } from "src/datetime_utils";
 import useFilters from "src/dag/useFilters";
 import DateTimeInput from "src/components/DateTimeInput";
-import DagRunTypeIcon from "src/components/RunTypeIcon";
+import { MultiValueContainerComponent, OptionComponent } from "./FilterOptions";
 
 declare const filtersOptions: {
   dagStates: RunState[];
@@ -127,7 +127,6 @@ const FilterBar = () => {
     },
   });
 
-
   interface RunTypesOption extends OptionBase {
     label: string;
     value: DagRun["runType"];
@@ -138,18 +137,8 @@ const FilterBar = () => {
     true,
     GroupBase<RunTypesOption>
   > = {
-    Option: ({ children, ...props }) => (
-      <chakraComponents.Option {...props}>
-        <Icon as={() => <DagRunTypeIcon runType={props.data.value} color="grey" />} />
-        <Box ml={1}>{children}</Box>
-      </chakraComponents.Option>
-    ),
-    MultiValueContainer: ({ children, ...props }) => (
-      <chakraComponents.MultiValueContainer {...props}>
-        <TagLeftIcon as={() => <DagRunTypeIcon runType={props.data.value} color="white" />} />
-        {children}
-      </chakraComponents.MultiValueContainer>
-    ),
+    Option: OptionComponent,
+    MultiValueContainer: MultiValueContainerComponent,
   };
 
   return (
