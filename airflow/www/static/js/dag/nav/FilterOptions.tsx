@@ -17,26 +17,47 @@
  * under the License.
  */
 
-/* global moment */
-
+import React from "react";
 import { Box, Icon, TagLeftIcon } from "@chakra-ui/react";
-import { chakraComponents } from "chakra-react-select";
+import {
+  chakraComponents,
+  GroupBase,
+  MultiValueGenericProps,
+  OptionBase,
+  OptionProps,
+} from "chakra-react-select";
 import DagRunTypeIcon from "src/components/RunTypeIcon";
+import type { DagRun } from "src/types";
 
-export const OptionComponent = ({ children, ...props }) => (
-    <chakraComponents.Option {...props}>
-      <Icon
-        as={() => <DagRunTypeIcon runType={props.data.value} color="grey" />}
-      />
-      <Box ml={1}>{children}</Box>
-    </chakraComponents.Option>
-  );
+export interface RunTypesOption extends OptionBase {
+  label: string;
+  value: DagRun["runType"];
+}
 
-export const MultiValueContainerComponent = ({ children, ...props }) => (
-<chakraComponents.MultiValueContainer {...props}>
-    <TagLeftIcon
-    as={() => <DagRunTypeIcon runType={props.data.value} color="white" />}
-    />
+export const OptionComponent: React.ComponentType<
+  OptionProps<RunTypesOption, true, GroupBase<RunTypesOption>>
+> = ({ children, ...props }) => (
+  <chakraComponents.Option
+    {...props}
+    innerRef={props.innerRef}
+    innerProps={props.innerProps}
+    label={props.label}
+    type={props.type}
+  >
+    <Icon>
+      <DagRunTypeIcon runType={props.data.value} color="grey" />
+    </Icon>
+    <Box ml={1}>{children}</Box>
+  </chakraComponents.Option>
+);
+
+export const MultiValueContainerComponent: React.ComponentType<
+  MultiValueGenericProps<RunTypesOption, true, GroupBase<RunTypesOption>>
+> = ({ children, ...props }) => (
+  <chakraComponents.MultiValueContainer {...props} sx={{}}>
+    <TagLeftIcon>
+      <DagRunTypeIcon runType={props.data.value} color="white" />
+    </TagLeftIcon>
     {children}
-</chakraComponents.MultiValueContainer>
+  </chakraComponents.MultiValueContainer>
 );

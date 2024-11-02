@@ -26,7 +26,6 @@ import type { DagRun, RunState, TaskState } from "src/types";
 import AutoRefresh from "src/components/AutoRefresh";
 import type {
   GroupBase,
-  OptionBase,
   SelectComponentsConfig,
   Size,
 } from "chakra-react-select";
@@ -36,7 +35,12 @@ import { useTimezone } from "src/context/timezone";
 import { isoFormatWithoutTZ } from "src/datetime_utils";
 import useFilters from "src/dag/useFilters";
 import DateTimeInput from "src/components/DateTimeInput";
-import { MultiValueContainerComponent, OptionComponent } from "./FilterOptions";
+import {
+  MultiValueContainerComponent,
+  OptionComponent,
+  RunTypesOption,
+} from "./FilterOptions";
+// import { MultiValueContainerComponent, OptionComponent } from "./FilterOptions";
 
 declare const filtersOptions: {
   dagStates: RunState[];
@@ -126,11 +130,6 @@ const FilterBar = () => {
       }),
     },
   });
-
-  interface RunTypesOption extends OptionBase {
-    label: string;
-    value: DagRun["runType"];
-  }
 
   const customComponents: SelectComponentsConfig<
     RunTypesOption,
