@@ -26,6 +26,7 @@ import type { DagRun, RunState, TaskState } from "src/types";
 import AutoRefresh from "src/components/AutoRefresh";
 import type {
   GroupBase,
+  Props,
   SelectComponentsConfig,
   Size,
 } from "chakra-react-select";
@@ -103,7 +104,11 @@ const FilterBar = () => {
     borderWidth: 2,
   };
 
-  const runTypeStyles = useChakraSelectProps({
+  const runTypeStyles: Props<
+    RunTypesOption,
+    true,
+    GroupBase<RunTypesOption>
+  > = useChakraSelectProps({
     ...multiSelectStyles,
     chakraStyles: {
       control: (provided) => ({
@@ -152,9 +157,11 @@ const FilterBar = () => {
           />
         </Box>
         <Box px={2} style={multiSelectBoxStyle}>
-          <MultiSelect
+          <MultiSelect<RunTypesOption, true, GroupBase<RunTypesOption>>
             {...runTypeStyles}
-            value={transformArrayToMultiSelectOptions(runType)}
+            value={
+              transformArrayToMultiSelectOptions(runType) as RunTypesOption[]
+            }
             onChange={(typeOptions) => {
               if (
                 Array.isArray(typeOptions) &&
@@ -165,7 +172,11 @@ const FilterBar = () => {
                 );
               }
             }}
-            options={transformArrayToMultiSelectOptions(runTypeOptions)}
+            options={
+              transformArrayToMultiSelectOptions(
+                runTypeOptions
+              ) as RunTypesOption[]
+            }
             components={customComponents}
             placeholder="All Run Types"
           />
